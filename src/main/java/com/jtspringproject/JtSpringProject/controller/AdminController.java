@@ -38,15 +38,22 @@ public class AdminController {
 	
 	int adminlogcheck = 0;
 	String usernameforclass = "";
-	@RequestMapping(value = {"/","/logout"})
+	@RequestMapping(value = { "/", "/logout" })
 	public String returnIndex() {
-		adminlogcheck =0;
+		adminlogcheck = 0;
 		usernameforclass = "";
-		return "userLogin";
+		return "redirect:/admin";
 	}
-	
-	
-	
+	@GetMapping("/admin")
+	public String adminHome(Model model) {
+		if (adminlogcheck == 1) {
+			model.addAttribute("username", usernameforclass);
+			return "adminHome";
+		} else {
+			return "redirect:/admin/login";
+		}
+	}
+
 	@GetMapping("/index")
 	public String index(Model model) {
 		if(usernameforclass.equalsIgnoreCase(""))
@@ -57,8 +64,7 @@ public class AdminController {
 		}
 			
 	}
-	
-	
+
 	@GetMapping("login")
 	public String adminlogin() {
 		
@@ -70,6 +76,11 @@ public class AdminController {
 			return "adminHome";
 		else
 			return "redirect:/admin/login";
+	}
+
+	@GetMapping("/returnToHome")
+	public String returnToHome() {
+		return "redirect:/admin/adminHome";
 	}
 	@GetMapping("/loginvalidate")
 	public String adminlog(Model model) {
@@ -183,7 +194,6 @@ public class AdminController {
 
 	@GetMapping("products/update/{id}")
 	public ModelAndView updateproduct(@PathVariable("id") int id) {
-		
 		ModelAndView mView = new ModelAndView("productsUpdate");
 		Product product = this.productService.getProduct(id);
 		List<Category> categories = this.categoryService.getCategories();
@@ -192,15 +202,28 @@ public class AdminController {
 		mView.addObject("product", product);
 		return mView;
 	}
-	
-	@RequestMapping(value = "products/update/{id}",method=RequestMethod.POST)
-	public String updateProduct(@PathVariable("id") int id ,@RequestParam("name") String name,@RequestParam("categoryid") int categoryId ,@RequestParam("price") int price,@RequestParam("weight") int weight, @RequestParam("quantity")int quantity,@RequestParam("description") String description,@RequestParam("productImage") String productImage)
-	{
 
-//		this.productService.updateProduct();
+
+	@RequestMapping(value = "products/update/{id}", method = RequestMethod.POST)
+	public String updateProduct(@PathVariable("id") int id, @RequestParam("name") String name, @RequestParam("categoryid") int categoryId, @RequestParam("price") int price, @RequestParam("weight") int weight, @RequestParam("quantity") int quantity, @RequestParam("description") String description, @RequestParam("productImage") String productImage) {
+		Product updatedProduct = new Product();
+		updatedProduct.setName(name);
+		updatedProduct.setPrice(price);
+		updatedProduct.setWeight(weight);
+		updatedProduct.setQuantity(quantity);
+		updatedProduct.setDescription(description);
+		updatedProduct.setImage(productImage);
+
+		Category category = this.categoryService.getCategory(categoryId);
+		updatedProduct.setCategory(category);
+
+		// Call the updateProduct method from productService
+		this.productService.updateProduct(id, updatedProduct);
+
 		return "redirect:/admin/products";
 	}
-	
+
+
 	@GetMapping("products/delete")
 	public String removeProduct(@RequestParam("id") int id)
 	{

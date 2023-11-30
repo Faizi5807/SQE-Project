@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -9,34 +9,32 @@
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
           integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <title>Document</title>
+    <title>User Login</title>
 </head>
 <body>
 
-
-
 <div class="container my-3">
-    
-        <div class="col-sm-6">
-            <h2>User Login</h2>
-            <form action="userloginvalidate" method="post">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" id="username" placeholder="Username*" required class="form-control form-control-lg">
-                </div>
-					
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control form-control-lg" placeholder="Password*" required name="password" id="password">
-                </div>
-                <span >Don't have an account <a class="linkControl" href="/register">Register here</a></span> <br><br>
+    <div class="col-sm-6">
+        <h2>User Login</h2>
+   <form action="userloginvalidate" method="post">
+       <div class="form-group">
+           <label for="username">Username</label>
+           <input type="text" name="username" id="username" placeholder="Username*" required class="form-control form-control-lg">
+       </div>
 
-                <input type="submit" value="Login" class="btn btn-primary btn-block">
-                <br><h3 style="color:red;">${message }</h3>
-                <br>
-                </form>
-        </div>
+       <div class="form-group">
+           <label for="password">Password</label>
+           <input type="password" class="form-control form-control-lg" placeholder="Password*" required name="password" id="password">
+       </div>
 
+       <span>Don't have an account? <a class="linkControl" href="/register">Register here</a></span> <br><br>
+
+       <input type="submit" value="Login" class="btn btn-primary btn-block">
+       <br><h3 style="color: red;" th:text="${error}"></h3>
+       <span th:if="${user != null}">Welcome, <span th:text="${user.username}"></span>! <a th:href="@{'/profile/' + ${user.id}}">Profile</a></span>
+   </form>
+
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
