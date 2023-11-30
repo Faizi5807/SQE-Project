@@ -36,7 +36,7 @@ public class HibernateConfiguration {
     @Value("update")
     private String HBM2DDL_AUTO;
  
-    @Value("packages")
+    @Value("com.jtspringproject.JtSpringProject")
     private String PACKAGES_TO_SCAN;
  
     @Bean
