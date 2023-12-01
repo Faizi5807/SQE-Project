@@ -64,11 +64,11 @@ public class UserController{
 		System.out.println(u.getUsername());
 		ModelAndView m1View  = new ModelAndView("userLogin");
 		m1View.addObject("user", u);
-		if (u.getUsername()== null) {
+		if (u.getRole().equals("ROLE_ADMIN")) {
 			m1View.addObject("mesage", "Admin cannot login here!");
 return m1View;
 		}
-		if(u.getUsername() != null && u.getUsername().equals(username)) {
+		else if(u.getUsername() != null && u.getUsername().equals(username)) {
 			
 			res.addCookie(new Cookie("username", u.getUsername()));
 			ModelAndView mView  = new ModelAndView("index");	
