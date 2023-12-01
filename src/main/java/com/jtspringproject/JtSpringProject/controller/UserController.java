@@ -62,7 +62,13 @@ public class UserController{
 		System.out.println(pass);
 		User u = this.userService.checkLogin(username, pass);
 		System.out.println(u.getUsername());
-		if(u.getUsername().equals(username)) {	
+		ModelAndView m1View  = new ModelAndView("userLogin");
+		m1View.addObject("user", u);
+		if (u.getUsername()== null) {
+			m1View.addObject("mesage", "Admin cannot login here!");
+return m1View;
+		}
+		if(u.getUsername() != null && u.getUsername().equals(username)) {
 			
 			res.addCookie(new Cookie("username", u.getUsername()));
 			ModelAndView mView  = new ModelAndView("index");	
