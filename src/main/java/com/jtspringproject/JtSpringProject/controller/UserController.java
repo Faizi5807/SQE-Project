@@ -26,6 +26,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.jtspringproject.JtSpringProject.services.userService;
 import com.jtspringproject.JtSpringProject.services.productService;
 import com.jtspringproject.JtSpringProject.services.cartService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 
 
@@ -57,7 +59,7 @@ public class UserController{
 		return "userLogin";
 	}
 	@RequestMapping(value = "userloginvalidate", method = RequestMethod.POST)
-	public ModelAndView userlogin( @RequestParam("username") String username, @RequestParam("password") String pass,Model model,HttpServletResponse res) {
+	public ModelAndView userlogin( @RequestParam("username") String username, @RequestParam("password") String pass,Model model,HttpServletResponse res, @RequestParam("confirmPassword") String confirmPassword, RedirectAttributes redirectAttributes) {
 		
 		System.out.println(pass);
 		User u = this.userService.checkLogin(username, pass);
@@ -68,10 +70,12 @@ public class UserController{
 			m1View.addObject("mesage", "Admin cannot login here!");
 return m1View;
 		}
+
+
 		else if(u.getUsername() != null && u.getUsername().equals(username)) {
 			
 			res.addCookie(new Cookie("username", u.getUsername()));
-			ModelAndView mView  = new ModelAndView("index");	
+			ModelAndView mView  = new ModelAndView("index");
 			mView.addObject("user", u);
 			List<Product> products = this.productService.getProducts();
 
@@ -107,14 +111,22 @@ return m1View;
 		return mView;
 	}
 	@RequestMapping(value = "newuserregister", method = RequestMethod.POST)
-	public String newUseRegister(@ModelAttribute User user)
+	public String newUseRegister(@ModelAttribute User user, @RequestParam("password") String pass, @RequestParam("confirmPassword") String confirmPassword, RedirectAttributes redirectAttributes)
 	{
-		
-		System.out.println(user.getEmail());
-		user.setRole("ROLE_NORMAL");
-		this.userService.addUser(user);
-		
-		return "redirect:/";
+ if (!pass.equals(confirmPassword)) {
+	 redirectAttributes.addFlashAttribute("errorMessage", "Passwords do not match");
+	 System.out.println("error registered at password");
+	 return "redirect:/register";
+	 //return "redirect:/register?error=passwordMismatch";
+	}
+ else {
+	 // Passwords match, continue with registration
+	 System.out.println(user.getEmail());
+	 user.setRole("ROLE_NORMAL");
+	 this.userService.addUser(user);
+	 System.out.println("successful register");
+	 return "redirect:/";
+ }
 	}
 	
 	
