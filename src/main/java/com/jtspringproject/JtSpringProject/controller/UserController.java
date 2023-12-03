@@ -36,6 +36,9 @@ public class UserController{
 	private userService userService;
 
 	@Autowired
+	private CartService cartService;
+
+	@Autowired
 	private productService productService;
 
 	@GetMapping("/register")
@@ -83,8 +86,19 @@ public class UserController{
 		}
 		
 	}
-	
-	
+
+	@GetMapping("/addtocart")
+	public String addToCart(@RequestParam("productId") int productId, @RequestParam("userId") int userId) {
+		// Retrieve the product based on the productId
+		Product product = productService.getProduct(productId);
+
+		// Add the product to the user's cart
+		cartService.addToCart(userId, product);
+
+		// Redirect the user to the product page or the cart page
+		return "redirect:/user/products";
+}
+
 	@GetMapping("/user/products")
 	public ModelAndView getproduct() {
 

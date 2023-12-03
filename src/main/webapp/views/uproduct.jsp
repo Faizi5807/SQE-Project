@@ -98,10 +98,11 @@
 					<td>
 
 
-				    <form action="products/addtocart" method="get">
-							<input type="hidden" name="id" value="${product.id}">
-							<input type="submit" value="Add To Cart" class="btn btn-warning">
-					</form>
+				    <form action="/addtocart" method="get">
+                        <input type="hidden" name="productId" value="${product.id}">
+                        <input type="hidden" name="userId" value="${user.id}">
+                        <input type="submit" value="Add To Cart" class="btn btn-warning">
+                    </form>
 					</td>
 
 
