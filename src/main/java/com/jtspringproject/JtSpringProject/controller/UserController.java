@@ -59,41 +59,43 @@ public class UserController{
 		return "userLogin";
 	}
 	@RequestMapping(value = "userloginvalidate", method = RequestMethod.POST)
-	public ModelAndView userlogin( @RequestParam("username") String username, @RequestParam("password") String pass,Model model,HttpServletResponse res, @RequestParam("confirmPassword") String confirmPassword, RedirectAttributes redirectAttributes) {
-		
+	public ModelAndView userlogin( @RequestParam("username") String username, @RequestParam("password") String pass,Model model,HttpServletResponse res) {
+
 		System.out.println(pass);
 		User u = this.userService.checkLogin(username, pass);
-		System.out.println(u.getUsername());
-		ModelAndView m1View  = new ModelAndView("userLogin");
-		m1View.addObject("user", u);
-		if (u.getRole().equals("ROLE_ADMIN")) {
-			m1View.addObject("mesage", "Admin cannot login here!");
-return m1View;
-		}
+		if (u != null) {
+			System.out.println(u.getUsername());
+			ModelAndView m1View = new ModelAndView("userLogin");
+			m1View.addObject("user", u);
+			if (u.getRole().equals("ROLE_ADMIN")) {
+				m1View.addObject("mesage", "Admin cannot login here!");
+				return m1View;
+			} else if (u.getUsername() != null && u.getUsername().equals(username)) {
 
+				res.addCookie(new Cookie("username", u.getUsername()));
+				ModelAndView mView = new ModelAndView("index");
+				mView.addObject("user", u);
+				List<Product> products = this.productService.getProducts();
 
-		else if(u.getUsername() != null && u.getUsername().equals(username)) {
-			
-			res.addCookie(new Cookie("username", u.getUsername()));
-			ModelAndView mView  = new ModelAndView("index");
-			mView.addObject("user", u);
-			List<Product> products = this.productService.getProducts();
+				if (products.isEmpty()) {
+					mView.addObject("msg", "No products are available");
+				} else {
+					mView.addObject("products", products);
+				}
+				return mView;
 
-			if (products.isEmpty()) {
-				mView.addObject("msg", "No products are available");
 			} else {
-				mView.addObject("products", products);
+				ModelAndView mView = new ModelAndView("userLogin");
+				mView.addObject("msg", "Please enter correct email and password");
+				return mView;
 			}
-			return mView;
 
-		}else {
-			ModelAndView mView = new ModelAndView("userLogin");
-			mView.addObject("msg", "Please enter correct email and password");
-			return mView;
 		}
-		
+		else {
+			ModelAndView m1View = new ModelAndView("userLogin");
+			return m1View;
+		}
 	}
-	
 	
 	@GetMapping("/user/products")
 	public ModelAndView getproduct() {

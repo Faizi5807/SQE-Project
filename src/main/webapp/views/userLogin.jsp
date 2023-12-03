@@ -16,7 +16,7 @@
 
 
 <div class="container my-3">
-    
+
         <div class="col-sm-6">
             <h2>User Login</h2>
             <form action="userloginvalidate" method="post">
@@ -24,17 +24,22 @@
                     <label for="username">Username</label>
                     <input type="text" name="username" id="username" placeholder="Username*" required class="form-control form-control-lg">
                 </div>
-					
+
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" class="form-control form-control-lg" placeholder="Password*" required name="password" id="password">
                 </div>
+
                 <span >Don't have an account <a class="linkControl" href="/register">Register here</a></span> <br><br>
 
                 <input type="submit" value="Login" class="btn btn-primary btn-block">
                 <br><h3 style="color:red;">${message }</h3>
+
                 <br>
 <h6 id="notification" style="color:blue;">*Admin wont be allowed login access here</h6>
+ <h6 id="errorMessage" style="color: red;" th:if="${wrongpass}">${wrongpass}</h6>
+
+
                 </form>
 <h3 id="notification" style="color:red;" th:if="${mesage}" th:text="${mesage}"></h3>
         </div>

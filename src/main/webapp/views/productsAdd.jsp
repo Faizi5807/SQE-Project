@@ -51,49 +51,48 @@
 		<form action="/admin/products/add" method="post">
 			<div class="row">
 				<div class="col-sm-5">
-					
+
 					<div class="form-group">
 						<c:forEach var="product" items="${products}">
-						<label for="name">Id</label> 
+						<label for="name">Id</label>
 						<input type="number" readonly="readonly" class="form-control border border-warning" name="id"  value="${product.id + 1} ">
-						
+
 						</c:forEach>
-						
+
 
 					</div>
 					<div class="form-group">
-						<label for="name">Name</label> 
+						<label for="name">Name</label>
 						<input type="text" class="form-control border border-warning" required name="name" placeholder="Enter name">
 					</div>
-					
+
 					<div class="form-group">
-					
-						<label for="category">Select Category</label> 
+
+					<label for="category">Select Category</label>
 						<select class="form-control border border-warning" name="categoryid" required>
-                            <option selected>Select a Category</option>
-							<c:forEach var="category" items="${categories}">
-								<option value="${category.id}">${category.name}</option>
-							</c:forEach>
-							
-						</select>
+                            <option value="" selected>Select a Category</option>
+                            <c:forEach var="category" items="${categories}">
+                                <option value="${category.id}">${category.name}</option>
+                            </c:forEach>
+                        </select>
 					</div>
-					
+
 					<div class="form-group">
-						<label for="price">Price</label> 
+						<label for="price">Price</label>
 						<input type="number" class="form-control border border-warning" required name="price" min="1" placeholder="Price">
 					</div>
 					<div class="form-group">
-						<label for="weight">Weight in grams</label> 
+						<label for="weight">Weight in grams</label>
 						<input type="number" class="form-control border border-warning" required name="weight" min="1" placeholder="Weight">
 					</div>
 					<div class="form-group">
-						<label for="weight">Available Quantity</label> 
+						<label for="weight">Available Quantity</label>
 						<input type="number" class="form-control border border-warning" required name="quantity" min="1" placeholder="Quantity">
 					</div>
-					
-					
+
+
 				</div>
-				
+
 				<div class="col-sm-5"><br>
 				<div class="form-group">
 						<label for="description">Product Description</label>

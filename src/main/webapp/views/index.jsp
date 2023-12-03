@@ -42,7 +42,7 @@
                     <a class="nav-link" th:href="@{/}" href="#">CART</a>
                 </li>
                  <li class="nav-item active">
-                    <a class="nav-link" href="profileDisplay" >Profile</a>
+                    <a href="/user/profile">Profile</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" sec:authorize="isAuthenticated()" href="logout">Logout</a>
