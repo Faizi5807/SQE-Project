@@ -27,15 +27,15 @@ import net.bytebuddy.asm.Advice.OffsetMapping.ForOrigin.Renderer.ForReturnTypeNa
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-	
+
 	@Autowired
 	private userService userService;
 	@Autowired
 	private categoryService categoryService;
-	
+
 	@Autowired
 	private productService productService;
-	
+
 	int adminlogcheck = 0;
 	String usernameforclass = "";
 	@RequestMapping(value = {"/","/logout"})
@@ -44,9 +44,9 @@ public class AdminController {
 		usernameforclass = "";
 		return "userLogin";
 	}
-	
-	
-	
+
+
+
 	@GetMapping("/index")
 	public String index(Model model) {
 		if(usernameforclass.equalsIgnoreCase(""))
@@ -55,13 +55,13 @@ public class AdminController {
 			model.addAttribute("username", usernameforclass);
 			return "index";
 		}
-			
+
 	}
-	
-	
+
+
 	@GetMapping("login")
 	public String adminlogin() {
-		
+
 		return "adminlogin";
 	}
 	@GetMapping("Dashboard")
@@ -73,14 +73,14 @@ public class AdminController {
 	}
 	@GetMapping("/loginvalidate")
 	public String adminlog(Model model) {
-		
+
 		return "adminlogin";
 	}
 	@RequestMapping(value = "loginvalidate", method = RequestMethod.POST)
 	public ModelAndView adminlogin( @RequestParam("username") String username, @RequestParam("password") String pass) {
-		
+
 		User user=this.userService.checkLogin(username, pass);
-		
+
 		if(user.getRole().equals("ROLE_ADMIN")) {
 			ModelAndView mv = new ModelAndView("adminHome");
 			adminlogcheck=1;
@@ -110,7 +110,7 @@ public class AdminController {
 	public String addCategory(@RequestParam("categoryname") String category_name)
 	{
 		System.out.println(category_name);
-		
+
 		Category category =  this.categoryService.addCategory(category_name);
 		if(category.getName().equals(category_name)) {
 			return "redirect:categories";
@@ -118,15 +118,15 @@ public class AdminController {
 			return "redirect:categories";
 		}
 	}
-	
+
 	@GetMapping("categories/delete")
 	public ModelAndView removeCategoryDb(@RequestParam("id") int id)
-	{	
-			this.categoryService.deleteCategory(id);
-			ModelAndView mView = new ModelAndView("forward:/categories");
-			return mView;
+	{
+		this.categoryService.deleteCategory(id);
+		ModelAndView mView = new ModelAndView("forward:/categories");
+		return mView;
 	}
-	
+
 	@GetMapping("categories/update")
 	public String updateCategory(@RequestParam("categoryid") int id, @RequestParam("categoryname") String categoryname)
 	{
@@ -134,8 +134,8 @@ public class AdminController {
 		return "redirect:/admin/categories";
 	}
 
-	
-//	 --------------------------Remaining --------------------
+
+	//	 --------------------------Remaining --------------------
 	@GetMapping("products")
 	public ModelAndView getproduct() {
 		if(adminlogcheck==0){
@@ -183,7 +183,7 @@ public class AdminController {
 
 	@GetMapping("products/update/{id}")
 	public ModelAndView updateproduct(@PathVariable("id") int id) {
-		
+
 		ModelAndView mView = new ModelAndView("productsUpdate");
 		Product product = this.productService.getProduct(id);
 		List<Category> categories = this.categoryService.getCategories();
@@ -192,27 +192,41 @@ public class AdminController {
 		mView.addObject("product", product);
 		return mView;
 	}
-	
+
 	@RequestMapping(value = "products/update/{id}",method=RequestMethod.POST)
 	public String updateProduct(@PathVariable("id") int id ,@RequestParam("name") String name,@RequestParam("categoryid") int categoryId ,@RequestParam("price") int price,@RequestParam("weight") int weight, @RequestParam("quantity")int quantity,@RequestParam("description") String description,@RequestParam("productImage") String productImage)
 	{
 
-//		this.productService.updateProduct();
+		Product product = this.productService.getProduct(id);
+		if (product != null) {
+			// Set details of the product
+			product.setName(name);
+			product.setPrice(price);
+			product.setWeight(weight);
+			product.setQuantity(quantity);
+			product.setDescription(description);
+			product.setImage(productImage);
+
+			Category category = this.categoryService.getCategory(categoryId);
+			product.setCategory(category);
+
+			this.productService.updateProduct(id, product);
+		}
 		return "redirect:/admin/products";
 	}
-	
+
 	@GetMapping("products/delete")
 	public String removeProduct(@RequestParam("id") int id)
 	{
 		this.productService.deleteProduct(id);
 		return "redirect:/admin/products";
 	}
-	
+
 	@PostMapping("products")
 	public String postproduct() {
 		return "redirect:/admin/categories";
 	}
-	
+
 	@GetMapping("customers")
 	public ModelAndView getCustomerDetail() {
 		if(adminlogcheck==0){
@@ -226,8 +240,8 @@ public class AdminController {
 			return mView;
 		}
 	}
-	
-	
+
+
 	@GetMapping("profileDisplay")
 	public String profileDisplay(Model model) {
 		String displayusername,displaypassword,displayemail,displayaddress;
@@ -238,19 +252,19 @@ public class AdminController {
 			PreparedStatement stmt = con.prepareStatement("select * from users where username = ?"+";");
 			stmt.setString(1, usernameforclass);
 			ResultSet rst = stmt.executeQuery();
-			
+
 			if(rst.next())
 			{
-			int userid = rst.getInt(1);
-			displayusername = rst.getString(2);
-			displayemail = rst.getString(3);
-			displaypassword = rst.getString(4);
-			displayaddress = rst.getString(5);
-			model.addAttribute("userid",userid);
-			model.addAttribute("username",displayusername);
-			model.addAttribute("email",displayemail);
-			model.addAttribute("password",displaypassword);
-			model.addAttribute("address",displayaddress);
+				int userid = rst.getInt(1);
+				displayusername = rst.getString(2);
+				displayemail = rst.getString(3);
+				displaypassword = rst.getString(4);
+				displayaddress = rst.getString(5);
+				model.addAttribute("userid",userid);
+				model.addAttribute("username",displayusername);
+				model.addAttribute("email",displayemail);
+				model.addAttribute("password",displaypassword);
+				model.addAttribute("address",displayaddress);
 			}
 		}
 		catch(Exception e)
@@ -260,23 +274,23 @@ public class AdminController {
 		System.out.println("Hello");
 		return "updateProfile";
 	}
-	
+
 	@RequestMapping(value = "updateuser",method=RequestMethod.POST)
-	public String updateUserProfile(@RequestParam("userid") int userid,@RequestParam("username") String username, @RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("address") String address) 
-	
+	public String updateUserProfile(@RequestParam("userid") int userid,@RequestParam("username") String username, @RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("address") String address)
+
 	{
 		try
 		{
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ecommjava","root","");
-			
+
 			PreparedStatement pst = con.prepareStatement("update users set username= ?,email = ?,password= ?, address= ? where uid = ?;");
 			pst.setString(1, username);
 			pst.setString(2, email);
 			pst.setString(3, password);
 			pst.setString(4, address);
 			pst.setInt(5, userid);
-			int i = pst.executeUpdate();	
+			int i = pst.executeUpdate();
 			usernameforclass = username;
 		}
 		catch(Exception e)
