@@ -48,7 +48,7 @@
 
 	<div class="jumbotron container border border-info">
 		<h3>Update Existing Product</h3>
-		<form action="/admin/products/update/${product.id}" method="post"></form>
+		<form action="/admin/products/update/${product.id}" method="post">
 			<div class="row">
 				<div class="col-sm-5">
 
@@ -113,8 +113,10 @@
 					<input type="submit" value="Update Details" class="btn btn-primary">
 				</div>
 			</div>
+		</div>
+
 		</form>
-	</div>
+
 
 
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
