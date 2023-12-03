@@ -31,7 +31,7 @@ import com.jtspringproject.JtSpringProject.services.cartService;
 
 @Controller
 public class UserController{
-
+	
 	@Autowired
 	private userService userService;
 
@@ -43,60 +43,30 @@ public class UserController{
 	{
 		return "register";
 	}
-	@PostMapping("/register")
-	public String processRegistration(@ModelAttribute User user, Model model) {
-
-		if (user.getAddress() == null || user.getAddress().isEmpty()) {
-			model.addAttribute("msg", "Please enter your address");
-			return "register";
-		}
-		user.setRole("ROLE_NORMAL");
-		this.userService.addUser(user);
-
-		return "redirect:/";
-	}
 
 	@GetMapping("/buy")
 	public String buy()
 	{
 		return "buy";
 	}
-
-
-	@GetMapping("/user/profile")
-	public ModelAndView userProfile(@CookieValue(value = "username", defaultValue = "") String username) {
-		ModelAndView mView = new ModelAndView("profile");
-
-		User user = userService.getUserByUsername(username);
-
-		if (user != null) {
-			mView.addObject("user", user);
-		} else {
-			mView.addObject("msg", "User not found");
-		}
-		return mView;
-	}
+	
 
 	@GetMapping("/")
 	public String userlogin(Model model) {
-
+		
 		return "userLogin";
 	}
 	@RequestMapping(value = "userloginvalidate", method = RequestMethod.POST)
-	public ModelAndView userlogin(
-			@RequestParam("username") String username,
-			@RequestParam("password") String pass,
-			Model model,
-			HttpServletResponse res)
-	{
+	public ModelAndView userlogin( @RequestParam("username") String username, @RequestParam("password") String pass,Model model,HttpServletResponse res) {
+		
+		System.out.println(pass);
 		User u = this.userService.checkLogin(username, pass);
-
-		if (u != null && isPasswordCorrect(u.getPassword(), pass)) {
+		System.out.println(u.getUsername());
+		if(u.getUsername().equals(username)) {	
+			
 			res.addCookie(new Cookie("username", u.getUsername()));
-			ModelAndView mView = new ModelAndView("index");
+			ModelAndView mView  = new ModelAndView("index");	
 			mView.addObject("user", u);
-			mView.addObject("profileLink", "/user/profile");
-
 			List<Product> products = this.productService.getProducts();
 
 			if (products.isEmpty()) {
@@ -105,19 +75,16 @@ public class UserController{
 				mView.addObject("products", products);
 			}
 			return mView;
-		} else {
+
+		}else {
 			ModelAndView mView = new ModelAndView("userLogin");
-			mView.addObject("error", "Incorrect username or password");
+			mView.addObject("msg", "Please enter correct email and password");
 			return mView;
 		}
+		
 	}
-
-	private boolean isPasswordCorrect(String storedHashedPassword, String enteredPassword) {
-		return passwordEncoder.matches(enteredPassword, storedHashedPassword);
-	}
-}
-
-
+	
+	
 	@GetMapping("/user/products")
 	public ModelAndView getproduct() {
 
@@ -136,16 +103,16 @@ public class UserController{
 	@RequestMapping(value = "newuserregister", method = RequestMethod.POST)
 	public String newUseRegister(@ModelAttribute User user)
 	{
-
+		
 		System.out.println(user.getEmail());
 		user.setRole("ROLE_NORMAL");
 		this.userService.addUser(user);
-
+		
 		return "redirect:/";
 	}
-
-
-
+	
+	
+	
 	   //for Learning purpose of model
 		@GetMapping("/test")
 		public String Test(Model model)
@@ -153,17 +120,17 @@ public class UserController{
 			System.out.println("test page");
 			model.addAttribute("author","jay gajera");
 			model.addAttribute("id",40);
-
+			
 			List<String> friends = new ArrayList<String>();
 			model.addAttribute("f",friends);
 			friends.add("xyz");
 			friends.add("abc");
-
+			
 			return "test";
 		}
-
+		
 		// for learning purpose of model and view ( how data is pass to view)
-
+		
 		@GetMapping("/test2")
 		public ModelAndView Test2()
 		{
@@ -173,14 +140,14 @@ public class UserController{
 			mv.addObject("name","jay gajera 17");
 			mv.addObject("id",40);
 			mv.setViewName("test2");
-
+			
 			List<Integer> list=new ArrayList<Integer>();
 			list.add(10);
 			list.add(25);
 			mv.addObject("marks",list);
 			return mv;
-
-
+			
+			
 		}
 
 
@@ -190,5 +157,5 @@ public class UserController{
 //		ModelAndView mv= new ModelAndView();
 //		List<Cart>carts = cartService.getCarts();
 //	}
-
+	  
 }

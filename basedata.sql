@@ -3,6 +3,7 @@
 
 
 #CREATE DATABASE IF NOT EXISTS ecommjava;
+#USE ecommjava;
 
 #CREATE TABLE IF NOT EXISTS CATEGORY(
 #category_id int unique key not null auto_increment primary key,

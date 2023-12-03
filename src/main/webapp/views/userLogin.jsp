@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -9,36 +9,58 @@
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
           integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <title>User Login</title>
+    <title>Document</title>
 </head>
 <body>
 
+
+
 <div class="container my-3">
-    <div class="col-sm-6">
-        <h2>User Login</h2>
-   <form action="userloginvalidate" method="post">
-       <div class="form-group">
-           <label for="username">Username</label>
-           <input type="text" name="username" id="username" placeholder="Username*" required class="form-control form-control-lg">
-       </div>
 
-       <div class="form-group">
-           <label for="password">Password</label>
-           <input type="password" class="form-control form-control-lg" placeholder="Password*" required name="password" id="password">
-       </div>
+        <div class="col-sm-6">
+            <h2>User Login</h2>
+            <form action="userloginvalidate" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" placeholder="Username*" required class="form-control form-control-lg">
+                </div>
 
-       <span>Don't have an account? <a class="linkControl" href="/register">Register here</a></span> <br><br>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control form-control-lg" placeholder="Password*" required name="password" id="password">
+                </div>
 
-       <input type="submit" value="Login" class="btn btn-primary btn-block">
-       <br><h3 style="color: red;" th:text="${error}"></h3>
-       <span th:if="${user != null}">Welcome, <span th:text="${user.username}"></span>! <a th:href="@{'/profile/' + ${user.id}}">Profile</a></span>
-   </form>
+                <span >Don't have an account <a class="linkControl" href="/register">Register here</a></span> <br><br>
 
-    </div>
+                <input type="submit" value="Login" class="btn btn-primary btn-block">
+                <br><h3 style="color:red;">${message }</h3>
+
+                <br>
+<h6 id="notification" style="color:blue;">*Admin wont be allowed login access here</h6>
+ <h6 id="errorMessage" style="color: red;" th:if="${wrongpass}">${wrongpass}</h6>
+
+
+                </form>
+<h3 id="notification" style="color:red;" th:if="${mesage}" th:text="${mesage}"></h3>
+        </div>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script th:inline="javascript">
+    var message ="*Admin wont be allowed login access here";
+
+    // Check if the message is not null and display it
+
+        document.getElementById('notification').innerText = message;
+
+    // Optional: Clear the message after displaying it
+    setTimeout(function() {
+        document.getElementById('notification').innerText = '';
+    }, 5000); // Clear the message after 5 seconds (adjust as needed)
+    /*]]>*/
+</script>
 </body>
 </html>

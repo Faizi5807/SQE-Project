@@ -21,7 +21,7 @@
         <form action="newuserregister" method="post">
             <div class="form-group">
                 <label for="firstName">User Name</label>
-                <input type="text" name="username" id="firstName" required placeholder="Your Username*" required class="form-control form-control-lg">
+                <input type="text" name="username" id="firstName" required placeholder="Your Username*" class="form-control form-control-lg">
             </div>
             <div class="form-group">
                 <label for="email">Email address</label>
@@ -34,6 +34,11 @@
                 <label for="password">Password</label>
                 <input type="password" class="form-control form-control-lg" required placeholder="Password*" required name="password"
                        id="password">
+                       <div class="form-group">
+                                                       <label for="confirmPassword">Confirm Password</label>
+                                                       <input type="password" class="form-control form-control-lg" placeholder="Confirm Password*" required name="confirmPassword" id="confirmPassword">
+                                                   </div>
+                                                   <h6 id="errorMessage" style="color: red;" th:if="${errorMessage}">${errorMessage}</h6>
             </div>
             <div class="form-group">
                 <label for="Address">Address</label>
@@ -41,7 +46,7 @@
             </div>
 <span style="margin-top: 10px">Already have an account <a class="linkControl" href="/">Login here</a></span> <br><br>
             <input type="submit" value="Register" class="btn btn-primary btn-block"><br>
-            
+
         </form>
     </div>
 </div>
@@ -50,5 +55,16 @@
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-</body>
+<script th:inline="javascript">
+    // Get the error message element
+    var errorMessageElement = document.getElementById('errorMessage');
+
+    // Check if the error message is present
+    if (errorMessageElement) {
+        // Set a timeout to hide the error message after 5000 milliseconds (adjust as needed)
+        setTimeout(function() {
+            errorMessageElement.style.display = 'none';
+        }, 5000);
+    }
+</script></body>
 </html>
