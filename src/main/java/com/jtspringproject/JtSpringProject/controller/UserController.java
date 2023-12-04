@@ -30,7 +30,7 @@ public class UserController{
 	private userService userService;
 
 	@Autowired
-	private CartService cartService;
+	private cartService cartService;
 
 	@Autowired
 	private productService productService;
@@ -87,7 +87,7 @@ public class UserController{
 		Product product = productService.getProduct(productId);
 
 		// Add the product to the user's cart
-		cartService.addToCart(userId, product);
+		cartService.addToCart(userId,product);
 
 		// Redirect the user to the product page or the cart page
 		return "redirect:/user/products";

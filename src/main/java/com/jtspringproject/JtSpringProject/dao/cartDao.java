@@ -21,10 +21,10 @@ public class cartDao {
         return cart;
     }
     @Transactional
-    public Cart addToCart(Long cartId, Product item)
+    public Cart addToCart(int cartId, Product product)
     {
         Cart cart = this.sessionFactory.getCurrentSession().get(Cart.class, cartId);
-        cart.addProduct(item);
+        cart.addProduct(product);
         this.sessionFactory.getCurrentSession().saveOrUpdate(cart);
         return cart;
     }
