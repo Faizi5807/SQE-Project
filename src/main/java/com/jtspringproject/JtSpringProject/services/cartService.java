@@ -3,10 +3,8 @@ package com.jtspringproject.JtSpringProject.services;
 import com.jtspringproject.JtSpringProject.dao.cartDao;
 import com.jtspringproject.JtSpringProject.models.Cart;
 import com.jtspringproject.JtSpringProject.models.Category;
-import com.jtspringproject.JtSpringProject.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,15 +32,6 @@ public List<Cart> getCarts(){
     {
         cartDao.deleteCart(cart);
     }
-
-    // CartService
-    @Transactional
-    public void addToCart(int userId, Product product) {
-        cartDao.addToCart(userId, product);
-    }
-
-
-
 
 
 

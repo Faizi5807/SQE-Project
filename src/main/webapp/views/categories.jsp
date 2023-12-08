@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!doctype html>
 <%@page import="java.sql.*"%>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
@@ -84,6 +85,13 @@
 		</div><br>
 
 
+ <div th:if="${message}" class="alert alert-success" role="alert">
+        <p th:text="${message}"></p>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <p th:text="${error}"></p>
+    </div>
 
 
 		<table class="table">

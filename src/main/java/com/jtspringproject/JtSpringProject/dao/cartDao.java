@@ -2,7 +2,7 @@ package com.jtspringproject.JtSpringProject.dao;
 import java.util.List;
 
 import com.jtspringproject.JtSpringProject.models.Cart;
-import com.jtspringproject.JtSpringProject.models.Product;
+import com.jtspringproject.JtSpringProject.models.Category;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -20,14 +20,7 @@ public class cartDao {
         this.sessionFactory.getCurrentSession().save(cart);
         return cart;
     }
-    @Transactional
-    public Cart addToCart(int cartId, Product product)
-    {
-        Cart cart = this.sessionFactory.getCurrentSession().get(Cart.class, cartId);
-        cart.addProduct(product);
-        this.sessionFactory.getCurrentSession().saveOrUpdate(cart);
-        return cart;
-    }
+
 
     @Transactional
     public List<Cart> getCarts() {

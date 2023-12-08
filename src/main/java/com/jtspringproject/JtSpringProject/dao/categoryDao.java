@@ -34,16 +34,19 @@ public class categoryDao {
 
 	@Transactional
 	public Boolean deletCategory(int id) {
-
 		Session session = this.sessionFactory.getCurrentSession();
-		Object persistanceInstance = session.load(Category.class, id);
 
-		if (persistanceInstance != null) {
-			session.delete(persistanceInstance);
+		// Load the persistent instance using get method instead of load
+		Category category = session.get(Category.class, id);
+
+		if (category != null) {
+			session.delete(category);
 			return true;
 		}
-		return false;
+   return false;
+
 	}
+
 
 	@Transactional
 	public Category updateCategory(int id, String name) {

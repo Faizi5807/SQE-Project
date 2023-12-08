@@ -1,16 +1,22 @@
 package com.jtspringproject.JtSpringProject.controller;
 
-
+import com.jtspringproject.JtSpringProject.models.Cart;
 import com.jtspringproject.JtSpringProject.models.Product;
 import com.jtspringproject.JtSpringProject.models.User;
 
-
+import java.io.Console;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jtspringproject.JtSpringProject.services.cartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +26,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.jtspringproject.JtSpringProject.services.userService;
 import com.jtspringproject.JtSpringProject.services.productService;
 import com.jtspringproject.JtSpringProject.services.cartService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 
 
@@ -28,9 +36,6 @@ public class UserController{
 	
 	@Autowired
 	private userService userService;
-
-	@Autowired
-	private cartService cartService;
 
 	@Autowired
 	private productService productService;
@@ -55,44 +60,43 @@ public class UserController{
 	}
 	@RequestMapping(value = "userloginvalidate", method = RequestMethod.POST)
 	public ModelAndView userlogin( @RequestParam("username") String username, @RequestParam("password") String pass,Model model,HttpServletResponse res) {
-		
+
 		System.out.println(pass);
 		User u = this.userService.checkLogin(username, pass);
-		System.out.println(u.getUsername());
-		if(u.getUsername().equals(username)) {	
-			
-			res.addCookie(new Cookie("username", u.getUsername()));
-			ModelAndView mView  = new ModelAndView("index");	
-			mView.addObject("user", u);
-			List<Product> products = this.productService.getProducts();
+		if (u != null) {
+			System.out.println(u.getUsername());
+			ModelAndView m1View = new ModelAndView("userLogin");
+			m1View.addObject("user", u);
+			if (u.getRole().equals("ROLE_ADMIN")) {
+				m1View.addObject("mesage", "Admin cannot login here!");
+				return m1View;
+			} else if (u.getUsername() != null && u.getUsername().equals(username)) {
 
-			if (products.isEmpty()) {
-				mView.addObject("msg", "No products are available");
+				res.addCookie(new Cookie("username", u.getUsername()));
+				ModelAndView mView = new ModelAndView("index");
+				mView.addObject("user", u);
+				List<Product> products = this.productService.getProducts();
+
+				if (products.isEmpty()) {
+					mView.addObject("msg", "No products are available");
+				} else {
+					mView.addObject("products", products);
+				}
+				return mView;
+
 			} else {
-				mView.addObject("products", products);
+				ModelAndView mView = new ModelAndView("userLogin");
+				mView.addObject("msg", "Please enter correct email and password");
+				return mView;
 			}
-			return mView;
 
-		}else {
-			ModelAndView mView = new ModelAndView("userLogin");
-			mView.addObject("msg", "Please enter correct email and password");
-			return mView;
 		}
-		
+		else {
+			ModelAndView m1View = new ModelAndView("userLogin");
+			return m1View;
+		}
 	}
-
-	@GetMapping("/addtocart")
-	public String addToCart(@RequestParam("productId") int productId, @RequestParam("userId") int userId) {
-		// Retrieve the product based on the productId
-		Product product = productService.getProduct(productId);
-
-		// Add the product to the user's cart
-		cartService.addToCart(userId,product);
-
-		// Redirect the user to the product page or the cart page
-		return "redirect:/user/products";
-}
-
+	
 	@GetMapping("/user/products")
 	public ModelAndView getproduct() {
 
@@ -109,14 +113,22 @@ public class UserController{
 		return mView;
 	}
 	@RequestMapping(value = "newuserregister", method = RequestMethod.POST)
-	public String newUseRegister(@ModelAttribute User user)
+	public String newUseRegister(@ModelAttribute User user, @RequestParam("password") String pass, @RequestParam("confirmPassword") String confirmPassword, RedirectAttributes redirectAttributes)
 	{
-		
-		System.out.println(user.getEmail());
-		user.setRole("ROLE_NORMAL");
-		this.userService.addUser(user);
-		
-		return "redirect:/";
+ if (!pass.equals(confirmPassword)) {
+	 redirectAttributes.addFlashAttribute("errorMessage", "Passwords do not match");
+	 System.out.println("error registered at password");
+	 return "redirect:/register";
+	 //return "redirect:/register?error=passwordMismatch";
+	}
+ else {
+	 // Passwords match, continue with registration
+	 System.out.println(user.getEmail());
+	 user.setRole("ROLE_NORMAL");
+	 this.userService.addUser(user);
+	 System.out.println("successful register");
+	 return "redirect:/";
+ }
 	}
 	
 	

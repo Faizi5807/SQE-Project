@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jtspringproject.JtSpringProject.models.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,10 @@ import com.jtspringproject.JtSpringProject.services.categoryService;
 import com.jtspringproject.JtSpringProject.services.productService;
 import com.jtspringproject.JtSpringProject.services.userService;
 import com.mysql.cj.protocol.Resultset;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import javax.servlet.http.HttpSession;
 
 import net.bytebuddy.asm.Advice.This;
 import net.bytebuddy.asm.Advice.OffsetMapping.ForOrigin.Renderer.ForReturnTypeName;
@@ -42,10 +47,44 @@ public class AdminController {
 	public String returnIndex() {
 		adminlogcheck =0;
 		usernameforclass = "";
-		return "userLogin";
+		return "redirect:/";
+	}
+	private Cart getUserCartFromSession(HttpSession session) {
+		// Retrieve the cart from the session
+		Cart userCart = (Cart) session.getAttribute("userCart");
+
+		// If the cart doesn't exist in the session, create a new one
+		if (userCart == null) {
+			userCart = new Cart();
+			// Set the cart in the session
+			session.setAttribute("userCart", userCart);
+		}
+
+		return userCart;
 	}
 
+	// Helper method to update the session with the modified user's cart
+	private void updateSessionWithUserCart(HttpSession session, Cart userCart) {
+		// Update the cart in the session
+		session.setAttribute("userCart", userCart);
+}
+	@RequestMapping(value = "/products/addtocart", method = RequestMethod.GET)
+	public String addToCart(@RequestParam("id") int productId, HttpSession session) {
+		// Retrieve the product from the database using productId
+		Product product = productService.getProduct(productId);
 
+		// Get the user's cart from the session or create a new one
+		Cart userCart = getUserCartFromSession(session);
+
+		// Add the selected product to the user's cart
+		userCart.addProduct(product);
+
+		// Update the session with the modified cart
+		updateSessionWithUserCart(session, userCart);
+
+		// Redirect to the product listing page or any other page as needed
+		return "redirect:/admin/products";
+}
 
 	@GetMapping("/index")
 	public String index(Model model) {
@@ -122,9 +161,19 @@ public class AdminController {
 	@GetMapping("categories/delete")
 	public ModelAndView removeCategoryDb(@RequestParam("id") int id)
 	{
-		this.categoryService.deleteCategory(id);
-		ModelAndView mView = new ModelAndView("forward:/categories");
-		return mView;
+		Boolean isDeleted = this.categoryService.deleteCategory(id);
+
+		ModelAndView mView = new ModelAndView("redirect:/admin/categories");
+
+		if (isDeleted) {
+			mView.addObject("message", "Category deleted successfully");
+		} else {
+			mView.addObject("error", "Category deletion failed or category not found");
+		}
+
+   return mView;
+
+
 	}
 
 	@GetMapping("categories/update")
