@@ -61,21 +61,21 @@ public class UserController{
 		return "userLogin";
 	}
 	@RequestMapping(value = "userloginvalidate", method = RequestMethod.POST)
-	public ModelAndView userlogin( @RequestParam("username") String username, @RequestParam("password") String pass,Model model,HttpServletResponse res) {
+	public ModelAndView userlogin(@RequestParam("username") String username,
+								  @RequestParam("password") String pass,
+								  Model model, HttpServletResponse res) {
 
 		System.out.println(pass);
 		User u = this.userService.checkLogin(username, pass);
-		if (u != null) {
-			System.out.println(u.getUsername());
-			ModelAndView m1View = new ModelAndView("userLogin");
-			m1View.addObject("user", u);
-			if (u.getRole().equals("ROLE_ADMIN")) {
-				m1View.addObject("mesage", "Admin cannot login here!");
-				return m1View;
-			} else if (u.getUsername() != null && u.getUsername().equals(username)) {
+		ModelAndView mView;
 
+		if (u != null && u.getUsername() != null && u.getUsername().equals(username)) {
+			if (u.getRole().equals("ROLE_ADMIN")) {
+				mView = new ModelAndView("userLogin");
+				mView.addObject("mesage", "Admin cannot login here!");
+			} else {
 				res.addCookie(new Cookie("username", u.getUsername()));
-				ModelAndView mView = new ModelAndView("index");
+				mView = new ModelAndView("index");
 				mView.addObject("user", u);
 				List<Product> products = this.productService.getProducts();
 
@@ -84,20 +84,15 @@ public class UserController{
 				} else {
 					mView.addObject("products", products);
 				}
-				return mView;
-
-			} else {
-				ModelAndView mView = new ModelAndView("userLogin");
-				mView.addObject("msg", "Please enter correct email and password");
-				return mView;
 			}
+		} else {
+			mView = new ModelAndView("userLogin");
+			mView.addObject("msg", "Invalid username or password. Please try again.");
+		}
 
-		}
-		else {
-			ModelAndView m1View = new ModelAndView("userLogin");
-			return m1View;
-		}
+		return mView;
 	}
+
 
 	@RequestMapping(value = "newuserregister", method = RequestMethod.POST)
 	public String newUseRegister(@ModelAttribute User user, @RequestParam("password") String pass, @RequestParam("confirmPassword") String confirmPassword, RedirectAttributes redirectAttributes)

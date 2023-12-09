@@ -36,12 +36,11 @@
                 <br><h3 style="color:red;">${message }</h3>
 
                 <br>
-<h6 id="notification" style="color:blue;">*Admin wont be allowed login access here</h6>
- <h6 id="errorMessage" style="color: red;" th:if="${wrongpass}">${wrongpass}</h6>
+<h6 id="adminErrorMessage" style="color: red;" th:if="${mesage}">${mesage}</h6>
+ <h6 id="loginErrorMessage" style="color: red;" th:if="${msg}">${msg}</h6>
 
 
                 </form>
-<h3 id="notification" style="color:red;" th:if="${mesage}" th:text="${mesage}"></h3>
         </div>
 
 </div>
@@ -50,17 +49,18 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <script th:inline="javascript">
-    var message ="*Admin wont be allowed login access here";
+    function hideErrorMessage(id) {
+            var element = document.getElementById(id);
+            if (element) {
+                setTimeout(function () {
+                    element.style.display = 'none';
+                }, 5000); // Set the delay in milliseconds (e.g., 5000 = 5 seconds)
+            }
+        }
 
-    // Check if the message is not null and display it
-
-        document.getElementById('notification').innerText = message;
-
-    // Optional: Clear the message after displaying it
-    setTimeout(function() {
-        document.getElementById('notification').innerText = '';
-    }, 5000); // Clear the message after 5 seconds (adjust as needed)
-    /*]]>*/
+        // Call the function for each error message
+        hideErrorMessage('adminErrorMessage');
+        hideErrorMessage('loginErrorMessage');
 </script>
 </body>
 </html>
