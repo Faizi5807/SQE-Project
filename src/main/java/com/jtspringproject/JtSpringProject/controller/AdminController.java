@@ -108,7 +108,7 @@ public class AdminController {
 		if(adminlogcheck==1)
 			return "adminHome";
 		else
-			return "redirect:/admin/login";
+			return "redirect:/admin/loginvalidate";
 	}
 	@GetMapping("/loginvalidate")
 	public String adminlog(Model model) {

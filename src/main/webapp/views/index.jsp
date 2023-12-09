@@ -51,10 +51,10 @@
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">
                     <img th:src="@{/images/logo.png}" src="../static/images/logo.png" width="auto" height="40"
-                         class="d-inline-block align-top" alt=""/>
+                        class="d-inline-block align-top" alt=""/>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -62,18 +62,17 @@
                     <h4>Welcome ${ username } </h4>
                     <ul class="navbar-nav mr-auto"></ul>
                     <ul class="navbar-nav">
-                        <li class="nav-item active">
-                            <a class="fas fa-shopping-cart" th:href="@{/}" href="#"></a>
+                        <li class="nav-item active" style="margin-right: 20px;">
+                            <a class="fas fa-shopping-cart" th:href="@{/}" href="#" style="font-size: 24px;"></a>
+                        </li>
+
+                        <li class="nav-item active" style="margin-right: 20px;">
+                            <a class="nav-link" href="/user/profile">Profile</a>
                         </li>
                         <li class="nav-item active">
-                            <a href="/user/profile">Profile</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" sec:authorize="isAuthenticated()" href="logout">Logout</a>
+                            <a class="nav-link" sec:authorize="isAuthenticated()" href="/">Logout</a>
                         </li>
                         <!-- Help and Contact Section -->
-
-                        </li>
                         <li class="nav-item active">
                             <a class="nav-link" href="#contact">Contact Us</a>
                         </li>
@@ -81,6 +80,7 @@
                 </div>
             </div>
         </nav>
+
 
         <main>
             <div class="container">

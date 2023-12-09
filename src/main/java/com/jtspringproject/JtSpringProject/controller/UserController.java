@@ -15,6 +15,7 @@ import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.jtspringproject.JtSpringProject.services.cartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,8 @@ public class UserController{
 
 	@Autowired
 	private productService productService;
-
+	@Autowired
+	private cartService cartService;
 	@GetMapping("/register")
 	public String registerUser()
 	{
@@ -96,22 +98,7 @@ public class UserController{
 			return m1View;
 		}
 	}
-	
-	@GetMapping("/user/products")
-	public ModelAndView getproduct() {
 
-		ModelAndView mView = new ModelAndView("uproduct");
-
-		List<Product> products = this.productService.getProducts();
-
-		if(products.isEmpty()) {
-			mView.addObject("msg","No products are available");
-		}else {
-			mView.addObject("products",products);
-		}
-
-		return mView;
-	}
 	@RequestMapping(value = "newuserregister", method = RequestMethod.POST)
 	public String newUseRegister(@ModelAttribute User user, @RequestParam("password") String pass, @RequestParam("confirmPassword") String confirmPassword, RedirectAttributes redirectAttributes)
 	{

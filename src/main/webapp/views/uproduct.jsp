@@ -36,7 +36,7 @@
 				<ul class="navbar-nav">
 					<li class="nav-item active"><a class="nav-link" href="/adminhome">Home
 							Page</a></li>
-					<li class="nav-item active"><a class="nav-link" href="/logout">Logout</a>
+					<li class="nav-item active"><a class="nav-link" href="/admin/loginvalidate">Logout</a>
 					</li>
 
 				</ul>
@@ -98,8 +98,7 @@
 					<td>
 
 
-				    <form action="${pageContext.request.contextPath}/admin/products/addtocart" method="get">
-                        <input type="hidden" name="id" value="${product.id}">
+				    <form th:action="@{/user/addtocart/{productId}(productId=${product.id})}" method="get">
                         <input type="submit" value="Add To Cart" class="btn btn-warning">
                     </form>
 					</td>
