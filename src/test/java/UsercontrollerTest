@@ -1,0 +1,113 @@
+import com.jtspringproject.JtSpringProject.controller.UserController;
+import com.jtspringproject.JtSpringProject.models.User;
+import com.jtspringproject.JtSpringProject.services.userService;
+import com.jtspringproject.JtSpringProject.services.productService;
+import com.jtspringproject.JtSpringProject.services.cartService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+class UserControllerTest {
+
+    @Mock
+    private userService userService;
+
+    @Mock
+    private productService productService;
+
+    @Mock
+    private cartService cartService;
+
+    @InjectMocks
+    private UserController userController;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    void testUserLogin() {
+        Model model = mock(Model.class);
+        String result = userController.userlogin(model);
+        assertEquals("userLogin", result);
+    }
+
+    @Test
+    void testUserLoginValidate() {
+        String username = "testUser";
+        String password = "testPassword";
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        User user = new User();
+        user.setUsername(username);
+        user.setRole("ROLE_USER");
+        when(userService.checkLogin(username, password)).thenReturn(user);
+
+        ModelAndView modelAndView = userController.userlogin(username, password, mock(Model.class), response);
+
+        assertEquals("index", modelAndView.getViewName());
+        assertEquals(2, modelAndView.getModel().size());
+        assertEquals(user, modelAndView.getModel().get("user"));
+        // Add more assertions based on your specific logic
+    }
+
+    @Test
+    void testNewUserRegisterWithMatchingPasswords() {
+        User user = new User();
+        user.setUsername("testUser");
+        user.setEmail("test@example.com");
+        String password = "password";
+        String confirmPassword = "password";
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
+        String result = userController.newUseRegister(user, password, confirmPassword, redirectAttributes);
+
+        assertEquals("redirect:/", result);
+        verify(userService).addUser(user);
+    }
+
+    @Test
+    void testNewUserRegisterWithMismatchingPasswords() {
+        User user = new User();
+        user.setUsername("testUser");
+        user.setEmail("test@example.com");
+        String password = "password";
+        String confirmPassword = "differentPassword";
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
+        String result = userController.newUseRegister(user, password, confirmPassword, redirectAttributes);
+
+        assertEquals("redirect:/register", result);
+        verify(redirectAttributes).addFlashAttribute("errorMessage", "Passwords do not match");
+        verify(userService, never()).addUser(user);
+    }
+
+    @Test
+    void testTestPage() {
+        Model model = mock(Model.class);
+
+        String result = userController.Test(model);
+
+        assertEquals("test", result);
+        verify(model).addAttribute("author", "jay gajera");
+        verify(model).addAttribute("id", 40);
+        verify(model).addAttribute("f", new ArrayList<String>() {{
+            add("xyz");
+            add("abc");
+}});
+    }
+
+}

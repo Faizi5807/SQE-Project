@@ -1,0 +1,80 @@
+import com.jtspringproject.JtSpringProject.dao.userDao;
+import com.jtspringproject.JtSpringProject.models.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
+
+class UserDaoTest {
+
+    @InjectMocks
+    private com.jtspringproject.JtSpringProject.dao.userDao userDao;
+
+    @Mock
+    private SessionFactory sessionFactory;
+
+    @Mock
+    private Session session;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.initMocks(this);
+        ReflectionTestUtils.setField(userDao, "sessionFactory", sessionFactory);
+        when(sessionFactory.getCurrentSession()).thenReturn(session);
+    }
+
+    @Test
+    void testGetAllUser() {
+        List<User> expectedUsers = List.of(new User(), new User());
+        Query<User> mockQuery = mock(Query.class);
+        when(session.createQuery("from CUSTOMER", User.class)).thenReturn(mockQuery);
+        when(mockQuery.list()).thenReturn(expectedUsers);
+
+        List<User> result = userDao.getAllUser();
+
+        assertEquals(expectedUsers, result);
+        verify(session).createQuery("from CUSTOMER", User.class);
+        verify(mockQuery).list();
+    }
+
+    @Test
+    void testSaveUser() {
+        User user = new User();
+        doNothing().when(session).saveOrUpdate(user);
+
+        User result = userDao.saveUser(user);
+
+        assertEquals(user, result);
+        verify(session).saveOrUpdate(user);
+    }
+
+    @Test
+    void testGetUser() {
+        String username = "testUser";
+        String password = "testPassword";
+        User expectedUser = new User();
+        Query<User> mockQuery = mock(Query.class);
+        when(session.createQuery("from CUSTOMER where username = :username", User.class)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("username", username)).thenReturn(mockQuery);
+        when(mockQuery.getSingleResult()).thenReturn(expectedUser);
+        expectedUser.setPassword(password);
+
+        User result = userDao.getUser(username, password);
+
+        assertEquals(expectedUser, result);
+        verify(session).createQuery("from CUSTOMER where username = :username", User.class);
+        verify(mockQuery).setParameter("username", username);
+        verify(mockQuery).getSingleResult();
+    }
+}

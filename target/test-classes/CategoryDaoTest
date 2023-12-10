@@ -1,0 +1,103 @@
+import com.jtspringproject.JtSpringProject.dao.categoryDao;
+import com.jtspringproject.JtSpringProject.models.Category;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
+
+class CategoryDaoTest {
+
+    @InjectMocks
+    private com.jtspringproject.JtSpringProject.dao.categoryDao categoryDao;
+
+    @Mock
+    private SessionFactory sessionFactory;
+
+    @Mock
+    private Session session;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.initMocks(this);
+        ReflectionTestUtils.setField(categoryDao, "sessionFactory", sessionFactory);
+        when(sessionFactory.getCurrentSession()).thenReturn(session);
+    }
+
+    @Test
+    void testAddCategory() {
+        String categoryName = "Test Category";
+        Category expectedCategory = new Category();
+        expectedCategory.setName(categoryName);
+        doNothing().when(session).saveOrUpdate(expectedCategory);
+
+        Category result = categoryDao.addCategory(categoryName);
+
+        assertEquals(expectedCategory, result);
+        verify(session).saveOrUpdate(expectedCategory);
+    }
+
+
+
+    @Test
+    void testGetCategories() {
+        List<Category> expectedCategories = List.of(new Category(), new Category());
+        Query<Category> mockQuery = mock(Query.class);
+        when(session.createQuery("from Category", Category.class)).thenReturn(mockQuery);
+        when(mockQuery.list()).thenReturn(expectedCategories);
+
+        List<Category> result = categoryDao.getCategories();
+
+        assertEquals(expectedCategories, result);
+        verify(session).createQuery("from Category", Category.class);
+        verify(mockQuery).list();
+    }
+
+    @Test
+    void testDeleteCategory() {
+        int categoryId = 1;
+        Category category = new Category();
+        when(session.get(Category.class, categoryId)).thenReturn(category);
+
+        boolean result = categoryDao.deletCategory(categoryId);
+
+        assertTrue(result);
+        verify(session).delete(category);
+    }
+
+    @Test
+    void testUpdateCategory() {
+        int categoryId = 1;
+        String newName = "Updated Category";
+        Category category = new Category();
+        category.setName(newName);
+        when(session.get(Category.class, categoryId)).thenReturn(category);
+
+        Category result = categoryDao.updateCategory(categoryId, newName);
+
+        assertEquals(newName, result.getName());
+        verify(session).update(category);
+    }
+
+    @Test
+    void testGetCategory() {
+        int categoryId = 1;
+        Category expectedCategory = new Category();
+        when(session.get(Category.class, categoryId)).thenReturn(expectedCategory);
+
+        Category result = categoryDao.getCategory(categoryId);
+
+        assertEquals(expectedCategory, result);
+        verify(session).get(Category.class, categoryId);
+}
+}
