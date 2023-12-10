@@ -1,0 +1,50 @@
+name: Java Tests CI with Maven
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  test:
+
+    runs-on: windows-latest
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: 248248
+          MYSQL_DATABASE: ecommjava
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # Set up MySQL client
+    - name: Set up MySQL client
+      run: |
+        echo "::set-env name=MYSQL_HOST::127.0.0.1"
+        echo "::set-env name=MYSQL_PORT::3306"
+        echo "::set-env name=MYSQL_USER::root"
+        echo "::set-env name=MYSQL_PASSWORD::248248"
+        echo "::set-env name=MYSQL_DB::ecommjava"
+
+    # Run the MySQL script
+    - name: Run MySQL script
+      run: |
+        sleep 10;
+        mysql -h ${{ env.MYSQL_HOST }} -u ${{ env.MYSQL_USER }} -p${{ env.MYSQL_PASSWORD }} ${{ env.MYSQL_DB }} < JtProject/basedata.sql
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Test with Maven
+      run: cd JtProject; mvn test
