@@ -1,0 +1,51 @@
+package com.jtspringproject.JtSpringProject;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class RegistrationTest {
+    private WebDriver driver;
+
+    @Before
+    public void setUp() {
+
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\Faizan\\Desktop\\CD\\chromedriver-win64\\chromedriver.exe");
+        driver = new ChromeDriver();
+        driver.get("http://localhost:8080/register");
+    }
+
+    @Test
+    public void testUserRegistration() {
+        // Fill in the registration form
+        WebElement usernameInput = driver.findElement(By.name("username"));
+        usernameInput.sendKeys("testuser");
+
+        WebElement passwordInput = driver.findElement(By.name("password"));
+        passwordInput.sendKeys("testpassword");
+
+        WebElement confirmPasswordInput = driver.findElement(By.name("confirmPassword"));
+        confirmPasswordInput.sendKeys("testpassword");
+
+        // Submit the registration form
+        WebElement submitButton = driver.findElement(By.id("registerButton"));
+        submitButton.click();
+
+        // Verify successful registration
+        String currentUrl = driver.getCurrentUrl();
+        assertEquals("http://localhost:8080/register", currentUrl);
+    }
+
+    @After
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+
+    }
+}
